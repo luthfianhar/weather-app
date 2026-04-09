@@ -7,7 +7,7 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_KEY = "0ac47f042b9cb5fc95bafb71c4d21636";
+  const API_KEY = import.meta.env.VITE_API_KEY || "0ac47f042b9cb5fc95bafb71c4d21636";
 
   const getWeather = async () => {
     if (!city) return;
@@ -16,11 +16,17 @@ function App() {
 
     try {
       const res = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`,
+        {
+          headers: {
+            'Accept': 'application/json'
+          }
+        }
       );
       setWeather(res.data);
     } catch (err) {
-      alert("Kota gak ketemu");
+      console.error("Error:", err);
+      alert("Kota gak ketemu atau API sedang down");
       setWeather(null);
     } finally {
       setLoading(false);
